@@ -1,0 +1,6 @@
+{
+  "name": "webhooks",
+  "dependencies": {
+    "dockerode": "^3.0.2"
+  }
+}
