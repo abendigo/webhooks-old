@@ -37,6 +37,33 @@ const auth = {
 //   return container.start();
 // }).catch(error => console.log('oops', error));
 
+/*
+-l traefik.http.routers.myslots.rule="Host(\`myslots.club\`)" \
+-l traefik.http.routers.myslots.entrypoints=http \
+-l traefik.http.routers.myslots.middlewares=redirect@file \
+-l traefik.http.routers.myslots-secured.rule="Host(\`myslots.club\`)" \
+-l traefik.http.routers.myslots-secured.entrypoints=https \
+-l traefik.http.routers.myslots-secured.tls=true \
+-l traefik.http.routers.myslots-secured.tls.certResolver=sample \
+-l traefik.enable=true \
+--network web \
+--name myslots.club \
+*/
+const slots = {
+  HostConfig: {
+    NetworkMode: 'web'
+  },
+  Labels: {
+    'traefik.http.routers.myslots.rule': "Host(\`myslots.club\`)",
+    'traefik.http.routers.myslots.entrypoints': 'http',
+    'traefik.http.routers.myslots.middlewares': 'redirect@file',
+    'traefik.http.routers.myslots-secured.rule': "Host(\`myslots.club\`)",
+    'traefik.http.routers.myslots-secured.entrypoints': 'https',
+    'traefik.http.routers.myslots-secured.tls': 'true',
+    'traefik.http.routers.myslots-secured.tls.certResolver': 'sample',
+    'traefik.enable': 'true'
+  }
+};
 
 async function foo() {
   const container = await docker.createContainer({
