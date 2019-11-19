@@ -2,7 +2,7 @@ import Docker from 'dockerode';
 
 const docker = new Docker({socketPath: '/var/run/docker.sock'});
 
-// docker.listContainers().then(list => console.log(list));
+docker.listContainers().then(list => console.log(list));
 
 // docker.listImages().then(list => console.log(list));
 
@@ -30,9 +30,21 @@ const auth = {
 // .then(success => console.log('success'))
 // .catch(error => console.log('error:', error));
 
-docker.createContainer({
-  Image: 'nginx',
-  name: 'nginx'
-}).then(container => {
-  return container.start();
-}).catch(error => console.log('oops', error));
+// docker.createContainer({
+//   Image: 'nginx',
+//   name: 'nginx'
+// }).then(container => {
+//   return container.start();
+// }).catch(error => console.log('oops', error));
+
+
+async function foo() {
+  const container = await docker.createContainer({
+    Image: 'nginx',
+    name: 'nginx'
+  });
+
+  await container.start();
+}
+
+// foo();
