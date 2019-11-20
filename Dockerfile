@@ -40,4 +40,4 @@ COPY --from=build /src/node_modules node_modules
 COPY --from=build /src/*.mjs .
 
 USER node
-CMD ["node", "--experimental-modules", "server.mjs"]
+CMD ["node", "--experimental-modules", "index.mjs"]

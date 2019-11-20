@@ -1,3 +1,5 @@
+import { app } from './app';
+
 import http from 'http';
 import crypto from 'crypto';
 // import { exec } from 'child_process';
