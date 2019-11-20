@@ -23,5 +23,14 @@ export const verify = (request, response, buffer, encoding) => {
 export const handler = (request, response, next) => {
   const { 'x-github-event': event, 'x-github-delivery': delivery } = request.headers;
   console.log('===============', { event, delivery });
+
+  switch (event) {
+    case 'ping':
+      break;
+
+    case 'deployment':
+      break;
+  }
+
   response.end();
 };
