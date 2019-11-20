@@ -3,11 +3,17 @@
   "version": "0.1.0",
   "main": "index.mjs",
   "repository": "github:abendigo/webhooks",
-  "scripts": {},
+  "scripts": {
+    "start": "node --experimental-modules index.mjs",
+    "dev": "nodemon --experimental-modules index.mjs"
+  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "dockerode": "^3.0.2",
-    "express-pino-logger": "^4.0.0",
+    "pino-http": "^4.3.0",
     "polka": "^0.5.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.0"
   }
 }

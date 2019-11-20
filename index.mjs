@@ -1,5 +1,7 @@
 import http from 'http';
-import { app } from './app.mjs';
+import handler from './app.mjs';
 
-const server = http.createServer(app);
-server.listen(8080);
+const port = process.env.PORT || 8080;
+
+const server = http.createServer(handler);
+server.listen(port);

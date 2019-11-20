@@ -1,16 +1,12 @@
 import bodyParser from 'body-parser';
-import logger from 'express-pino-logger';
+import logger from 'pino-http';
 import polka from 'polka';
 
-const github = (request, response, next) => {
-  request.log.info('github');
-  console.log('github', request.body);
-  response.end();
-};
+import { verify, handler as github } from './github';
 
 const { handler } = polka()
   .use(logger())
-  .use(bodyParser.json())
-  .post('/github', github);
+  // .use(bodyParser.json({ verify: verify }))
+  .post('/github/:repo?', bodyParser.json({ verify: verify }), github);
 
-export const app = handler;
+export default handler;

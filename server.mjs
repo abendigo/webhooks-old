@@ -10,6 +10,11 @@ const config = {
   github: {
     repositories: {
       "abendigo/myslots.club": {
+        authconfig: {
+          username: 'abendigo',
+          password: 'password',
+        },
+        image: 'docker.pkg.github.com/abendigo/myslots.club/myslots.club',
         webhook_secret: 'MY_GITHUB_WEBHOOK_SECRET'
       },
       "abendigo/webkooks": {
