@@ -2,7 +2,12 @@ import Docker from 'dockerode';
 
 const docker = new Docker({socketPath: '/var/run/docker.sock'});
 
-docker.listContainers().then(list => console.log(list));
+docker.listContainers().then(list => {
+  console.log(list);
+
+  // const nginx = docker.getContainer(list[0].Id)
+  // nginx.stop(() => console.log('done'));
+});
 
 // docker.listImages().then(list => console.log(list));
 
