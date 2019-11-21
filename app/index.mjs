@@ -15,17 +15,6 @@ const ensureContentType = expected => (request, response, next) => {
   }
 };
 
-const ensureJson = (request, response, next) => {
-  const { 'content-type': content } = request.headers;
-
-  if (content !== 'application/json') {
-    response.statusCode = 403;
-    response.end('Invalid Content-Type.');
-  } else {
-    next();
-  }
-}
-
 const { handler } = polka()
   .use(logger())
   .post('/github/:repo?', ensureContentType('application/json'), bodyParser.json({ verify: verify }), github);
