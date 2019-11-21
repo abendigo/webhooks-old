@@ -16,7 +16,8 @@ COPY package*.json ./
 # npm ci works similarly to npm i, but skips the expensive dependency resolution step,
 # and instead just installs the exact dependencies specified in your package-lock.json file.
 # It’s basically a faster npm i for use in CI environments.
-RUN npm ci
+RUN npm ci --production
+# RUN npm ci
 
 # Bundle app source
 COPY . .
@@ -26,19 +27,21 @@ COPY . .
 # RUN npm run build
 
 # get rid of any development dependencies as they are no longer needed past this point.
-RUN npm prune --production
+# RUN npm prune --production
 
 # Thats it for the build side. Now, the deployable parts
 
 FROM node:12.13.0-alpine
 
-ENV PORT=8080
-EXPOSE $PORT
 WORKDIR /usr/src/service
 
 COPY --from=build /src/node_modules node_modules
-COPY --from=build /src/routes routes
+COPY --from=build /src/app app
 COPY --from=build /src/*.mjs ./
+
+ENV NODE_ENV=production
+ENV PORT=8080
+EXPOSE $PORT
 
 USER node
 CMD ["node", "--experimental-modules", "server.mjs"]
