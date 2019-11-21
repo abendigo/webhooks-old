@@ -37,7 +37,7 @@ EXPOSE $PORT
 WORKDIR /usr/src/service
 
 COPY --from=build /src/node_modules node_modules
-COPY --from=build /src/*.mjs .
+COPY --from=build /src/*.mjs ./
 
 USER node
 CMD ["node", "--experimental-modules", "index.mjs"]
