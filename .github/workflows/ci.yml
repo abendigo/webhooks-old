@@ -1,0 +1,24 @@
+name: Build Docker image
+env:
+  REPOSITORY: webhooks
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      # - run: echo ${{ secrets.GITHUB_DOCKER_PASSWORD }} | docker login docker.pkg.github.com -u abendigo --password-stdin
+      - run: |
+          VERSION=`git describe --tags --always --dirty`
+          echo ${VERSION}
+          echo ${REPOSITORY}
+          # docker build -t docker.pkg.github.com/${GITHUB_REPOSITORY}/ticka.club:${VERSION} .
+          # docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/ticka.club:${VERSION} docker.pkg.github.com/${GITHUB_REPOSITORY}/ticka.club:latest
+          # docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/ticka.club:${VERSION}
+          # docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/ticka.club:latest
