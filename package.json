@@ -1,11 +1,12 @@
 {
   "name": "webhooks",
   "version": "0.1.0",
-  "main": "index.mjs",
+  "license": "MIT",
+  "main": "server.mjs",
   "repository": "github:abendigo/webhooks",
   "scripts": {
-    "start": "node --experimental-modules index.mjs",
-    "dev": "nodemon --experimental-modules index.mjs"
+    "start": "node --experimental-modules server.mjs",
+    "dev": "nodemon --experimental-modules server.mjs"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
