@@ -4,8 +4,30 @@ import polka from 'polka';
 
 import { verify, handler as github } from './routes/github.mjs';
 
+const ensureContentType = expected => (request, response, next) => {
+  const { 'content-type': actual } = request.headers;
+
+  if (actual !== expected) {
+    response.statusCode = 403;
+    response.end('Invalid Content-Type.');
+  } else {
+    next();
+  }
+};
+
+const ensureJson = (request, response, next) => {
+  const { 'content-type': content } = request.headers;
+
+  if (content !== 'application/json') {
+    response.statusCode = 403;
+    response.end('Invalid Content-Type.');
+  } else {
+    next();
+  }
+}
+
 const { handler } = polka()
   .use(logger())
-  .post('/github/:repo?', bodyParser.json({ verify: verify }), github);
+  .post('/github/:repo?', ensureContentType('application/json'), bodyParser.json({ verify: verify }), github);
 
 export default handler;
