@@ -1,5 +1,5 @@
 import http from 'http';
-import handler from './app.mjs';
+import handler from './app/index.mjs';
 
 const port = process.env.PORT || 8080;
 

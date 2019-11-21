@@ -1,6 +1,9 @@
 {
   "name": "webhooks",
   "version": "0.1.1",
+  "description": "",
+  "homepage": "https://github.com/abendigo/webhooks#readme",
+  "bugs": "https://github.com/abendigo/webhooks/issues",
   "license": "MIT",
   "main": "server.mjs",
   "repository": "github:abendigo/webhooks",
@@ -8,6 +11,7 @@
     "start": "node --experimental-modules server.mjs",
     "dev": "nodemon --experimental-modules server.mjs"
   },
+  "config": {},
   "dependencies": {
     "body-parser": "^1.19.0",
     "dockerode": "^3.0.2",

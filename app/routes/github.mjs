@@ -1,22 +1,30 @@
 import crypto from 'crypto';
 
 const secrets = {
-  'myslots.club': 'MY_GITHUB_WEBHOOK_SECRET',
-  webhooks: 'MY_GITHUB_WEBHOOK_SECRET'
+  'myslots.club': {
+    webhook: 'MY_GITHUB_WEBHOOK_SECRET'
+  },
+  webhooks: {
+    webhook: 'MY_GITHUB_WEBHOOK_SECRET'
+  }
 };
 
 export const verify = (request, response, buffer, encoding) => {
   const { 'x-hub-signature': expected } = request.headers;
   const { repo } = request.params;
 
+  if (!secrets[repo]) {
+    throw new Error("Unexpected Repository.");
+  }
+
   const sha1 = crypto
-    .createHmac('sha1', secrets[repo])
+    .createHmac('sha1', secrets[repo].webhook)
     .update(buffer, encoding)
     .digest('hex');
   const signature = `sha1=${sha1}`;
 
   if (signature !== expected) {
-    throw new Error("Invalid signature.");
+    throw new Error("Invalid Signature.");
   }
 }
 
