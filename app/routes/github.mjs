@@ -1,13 +1,14 @@
 import crypto from 'crypto';
 
-const secrets = {
-  'myslots.club': {
-    webhook: 'MY_GITHUB_WEBHOOK_SECRET'
-  },
-  webhooks: {
-    webhook: 'MY_GITHUB_WEBHOOK_SECRET'
-  }
-};
+import secrets from '../../secrets.json';
+// const secrets = {
+//   'myslots.club': {
+//     webhook: 'MY_GITHUB_WEBHOOK_SECRET'
+//   },
+//   webhooks: {
+//     webhook: 'MY_GITHUB_WEBHOOK_SECRET'
+//   }
+// };
 
 export const verify = (request, response, buffer, encoding) => {
   const { 'x-hub-signature': expected } = request.headers;
