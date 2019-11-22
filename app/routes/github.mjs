@@ -1,14 +1,7 @@
+import Octokit from '@octokit/rest';
 import crypto from 'crypto';
 
 import secrets from '../../secrets.json';
-// const secrets = {
-//   'myslots.club': {
-//     webhook: 'MY_GITHUB_WEBHOOK_SECRET'
-//   },
-//   webhooks: {
-//     webhook: 'MY_GITHUB_WEBHOOK_SECRET'
-//   }
-// };
 
 export const verify = (request, response, buffer, encoding) => {
   const { 'x-hub-signature': expected } = request.headers;
@@ -31,13 +24,30 @@ export const verify = (request, response, buffer, encoding) => {
 
 export const handler = (request, response, next) => {
   const { 'x-github-event': event, 'x-github-delivery': delivery } = request.headers;
-  console.log('===============', { event, delivery });
+  const { repo } = request.params;
+
+  console.log('===============', { event, delivery, repo });
+
+  const octokit = new Octokit({
+    auth: secrets[repo].token,
+    userAgent: "abendigo/webhooks v0.1.1",
+    log: console
+  });
 
   switch (event) {
     case 'ping':
       break;
 
     case 'deployment':
+      const { deployment: { id }, repository: { name, owner: { login } } } = request.body;
+      console.log({ id, name, login });
+
+      octokit.repos.createDeploymentStatus({
+        owner: login,
+        repo: name,
+        deployment_id: is,
+        state: 'success'
+      });
       break;
   }
 
