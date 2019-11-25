@@ -9,24 +9,26 @@ on:
       - master
 
 jobs:
-  # build:
-  #   name: Build Docker image
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - name: Login to Registry
-  #       run: echo ${{ secrets.GITHUB_DOCKER_PASSWORD }} | docker login docker.pkg.github.com -u ${{ secrets.GITHUB_DOCKER_USERNAME }} --password-stdin
-  #     - name: Build, Tag, and Publish
-  #       run: |
-  #         VERSION=`git describe --tags --always --dirty`
-  #         docker build -t docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:${VERSION} .
-  #         docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:${VERSION} docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:latest
-  #         docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:${VERSION}
-  #         docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:latest
-
-  experiment:
+  build:
+    name: Build, Tag, and Publish Docker image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - run: echo "::set-env name=VERSION::$(git describe --tags --always --dirty)"
-      - run: echo docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:${VERSION}
+      - name: Generate VERSION
+        run: echo "::set-env name=VERSION::$(git describe --tags --always --dirty)"
+      - name: Build
+        run: docker build -t docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:${VERSION} .
+      - name: Tag
+        run: docker tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:${VERSION} docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:latest
+      - name: Login to Registry
+        run: echo ${{ secrets.GITHUB_DOCKER_PASSWORD }} | docker login docker.pkg.github.com -u ${{ secrets.GITHUB_DOCKER_USERNAME }} --password-stdin
+      - name: Publish
+        run: |
+          docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:${VERSION}
+          docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:latest
+  # experiment:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - run: echo "::set-env name=VERSION::$(git describe --tags --always --dirty)"
+  #     - run: echo docker.pkg.github.com/${GITHUB_REPOSITORY}/${REPOSITORY}:${VERSION}
