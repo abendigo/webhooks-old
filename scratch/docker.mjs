@@ -31,7 +31,7 @@ const foo = async () => {
 
   const auth = {
     username: 'abendigo',
-    password: '015868a1f2f2507f1baee7ed35d7862348db9014'
+    password: 'token'
   };
 
   // pullImage(image = 'node', version = 'latest') {
