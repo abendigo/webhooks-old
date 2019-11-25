@@ -1,6 +1,6 @@
 name: Build, Tag, and Publish Docker image
 env:
-  REGISTRY: ${REGISTRY}
+  REGISTRY: docker.pkg.github.com
   IMAGE: webhooks
 
 on:
