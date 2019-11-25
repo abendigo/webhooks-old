@@ -1,5 +1,6 @@
 {
   "myslots.club": {
+    "name": "myslots.club",
     "Labels": {
       "traefik.http.routers.myslots.rule": "Host(`myslots.club`)",
       "traefik.http.routers.myslots.entrypoints": "http",

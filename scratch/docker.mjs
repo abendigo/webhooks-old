@@ -1,19 +1,27 @@
 import Docker from 'dockerode';
 
-const docker = new Docker({socketPath: '/var/run/docker.sock'});
+// const docker = new Docker({socketPath: '/var/run/docker.sock'});
+const docker = new Docker();
 
-docker.listContainers().then(list => {
-  console.log(list);
+docker
+  .listContainers({
+    all: true,
+    filters: {
+      name: ['myslots.club']
+    }
+  })
+  .then(list => {
+    console.log(list);
 
-  // const nginx = docker.getContainer(list[0].Id)
-  // nginx.stop(() => console.log('done'));
-});
+    // const nginx = docker.getContainer(list[0].Id)
+    // nginx.stop(() => console.log('done'));
+  });
 
 // docker.listImages().then(list => console.log(list));
 
 const auth = {
   username: 'abendigo',
-  password: '---',
+  password: '---'
 };
 // docker.pull(
 //   'docker.pkg.github.com/abendigo/myslots.club/myslots.club:e8de9a8aa078ba3aa090e11415ac24fb16cb3284',
@@ -59,10 +67,10 @@ const slots = {
     NetworkMode: 'web'
   },
   Labels: {
-    'traefik.http.routers.myslots.rule': "Host(\`myslots.club\`)",
+    'traefik.http.routers.myslots.rule': 'Host(`myslots.club`)',
     'traefik.http.routers.myslots.entrypoints': 'http',
     'traefik.http.routers.myslots.middlewares': 'redirect@file',
-    'traefik.http.routers.myslots-secured.rule': "Host(\`myslots.club\`)",
+    'traefik.http.routers.myslots-secured.rule': 'Host(`myslots.club`)',
     'traefik.http.routers.myslots-secured.entrypoints': 'https',
     'traefik.http.routers.myslots-secured.tls': 'true',
     'traefik.http.routers.myslots-secured.tls.certResolver': 'sample',
@@ -70,13 +78,13 @@ const slots = {
   }
 };
 
-async function foo() {
-  const container = await docker.createContainer({
-    Image: 'nginx',
-    name: 'nginx'
-  });
+// async function foo() {
+//   const container = await docker.createContainer({
+//     Image: 'nginx',
+//     name: 'nginx'
+//   });
 
-  await container.start();
-}
+//   await container.start();
+// }
 
 // foo();
