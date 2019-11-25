@@ -1,90 +1,83 @@
 import Docker from 'dockerode';
 
-// const docker = new Docker({socketPath: '/var/run/docker.sock'});
-const docker = new Docker();
+const foo = async () => {
+  const docker = new Docker();
 
-docker
-  .listContainers({
-    all: true,
-    filters: {
-      name: ['myslots.club']
-    }
-  })
-  .then(list => {
-    console.log(list);
+  const fromImage = 'docker.pkg.github.com/abendigo/myslots.club/myslots.club';
+  // const tag = '0.1.0-5-g3c93476';
+  // const tag = '0.1.0-4-g75156df';
+  const tag = '0.1.0-3';
 
-    // const nginx = docker.getContainer(list[0].Id)
-    // nginx.stop(() => console.log('done'));
+  // const list = await docker.listContainers({
+  //   all: true
+  //   // filters: {
+  //   //   name: ['myslots.club']
+  //   // }
+  // });
+  // console.log(list);
+
+  const images = await docker.listImages({
+    all: false
+    // filters: {
+    //   reference: [`${fromImage}:${tag}`]
+    // }
   });
-
-// docker.listImages().then(list => console.log(list));
-
-const auth = {
-  username: 'abendigo',
-  password: '---'
-};
-// docker.pull(
-//   'docker.pkg.github.com/abendigo/myslots.club/myslots.club:e8de9a8aa078ba3aa090e11415ac24fb16cb3284',
-//   {authconfig: auth}
-// )
-//   .then(success => console.log(success))
-//   .then(undefined, error => console.log(error));
-// 'docker.pkg.github.com/abendigo/myslots.club/myslots.club:e8de9a8aa078ba3aa090e11415ac24fb16cb3284',
-
-// docker.run(
-//   'nginx',
-//   [], [],
-//   {
-//     Labels: {
-
-//     }
-//   }
-// )
-// .then(success => console.log('success'))
-// .catch(error => console.log('error:', error));
-
-// docker.createContainer({
-//   Image: 'nginx',
-//   name: 'nginx'
-// }).then(container => {
-//   return container.start();
-// }).catch(error => console.log('oops', error));
-
-/*
--l traefik.http.routers.myslots.rule="Host(\`myslots.club\`)" \
--l traefik.http.routers.myslots.entrypoints=http \
--l traefik.http.routers.myslots.middlewares=redirect@file \
--l traefik.http.routers.myslots-secured.rule="Host(\`myslots.club\`)" \
--l traefik.http.routers.myslots-secured.entrypoints=https \
--l traefik.http.routers.myslots-secured.tls=true \
--l traefik.http.routers.myslots-secured.tls.certResolver=sample \
--l traefik.enable=true \
---network web \
---name myslots.club \
-*/
-const slots = {
-  HostConfig: {
-    NetworkMode: 'web'
-  },
-  Labels: {
-    'traefik.http.routers.myslots.rule': 'Host(`myslots.club`)',
-    'traefik.http.routers.myslots.entrypoints': 'http',
-    'traefik.http.routers.myslots.middlewares': 'redirect@file',
-    'traefik.http.routers.myslots-secured.rule': 'Host(`myslots.club`)',
-    'traefik.http.routers.myslots-secured.entrypoints': 'https',
-    'traefik.http.routers.myslots-secured.tls': 'true',
-    'traefik.http.routers.myslots-secured.tls.certResolver': 'sample',
-    'traefik.enable': 'true'
+  console.log('images', images.length);
+  for (let image of images) {
+    console.log('image', image.RepoTags);
   }
+
+  // docker.listImages().then(list => console.log(list));
+
+  const auth = {
+    username: 'abendigo',
+    password: '015868a1f2f2507f1baee7ed35d7862348db9014'
+  };
+
+  // pullImage(image = 'node', version = 'latest') {
+  //   this.imageName = `${image}:${version}`;
+  //   log.debug(`=> Pulling ${this.imageName}`);
+  //   return new Promise((resolve, reject) => {
+  //     this.docker.pull(this.imageName, (err, stream) => {
+  //       let message = '';
+  //       if(err) return reject(err);
+  //       stream.on('data', data => message += data);
+  //       stream.on('end', () => resolve(message));
+  //       stream.on('error', err => reject(err));
+  //     });
+  //   });
+  // }
+
+  // const stream = await client.pull(`${imageName}:${tag}`, {})
+  // stream.on('data', log.debug)
+  // stream.on('end', () => log.info(`End pulling ${imageName}:${tag}`))
+
+  // docker.pull(`${fromImage}:${tag}`, { authconfig: auth }, (error, stream) => {
+  //   docker.modem.followProgress(stream, onFinished, onProgress);
+
+  //   function onFinished(err, output) {
+  //     //output is an array with output json parsed objects
+  //     //...
+  //     console.log('finished', err);
+  //   }
+  //   function onProgress(event) {
+  //     //...
+  //     console.log('progress', event);
+  //   }
+  // });
+
+  // const stream = await docker.pull(`${fromImage}:${tag}`, { authconfig: auth });
+  // console.log(pulled);
+
+  await new Promise((resolve, reject) => {
+    docker.createImage(auth, { fromImage, tag }, (error, stream) => {
+      if (error) return reject(error);
+
+      // stream.on('data', data => console.log(data.toString('utf8')));
+      stream.on('end', resolve); //console.log(`End pulling ${fromImage}:${tag}`));
+      stream.on('error', reject);
+    });
+  });
 };
 
-// async function foo() {
-//   const container = await docker.createContainer({
-//     Image: 'nginx',
-//     name: 'nginx'
-//   });
-
-//   await container.start();
-// }
-
-// foo();
+foo();
