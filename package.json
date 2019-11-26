@@ -9,7 +9,7 @@
   "repository": "github:abendigo/webhooks",
   "scripts": {
     "start": "node --experimental-modules server.mjs",
-    "dev": "nodemon --experimental-modules server.mjs"
+    "dev": "nodemon --experimental-modules server.mjs | pino-pretty -c -t"
   },
   "config": {},
   "dependencies": {
@@ -23,6 +23,7 @@
     "eslint": "^6.7.0",
     "eslint-config-prettier": "^6.7.0",
     "nodemon": "^2.0.0",
+    "pino-pretty": "^3.4.0",
     "prettier": "^1.19.1"
   }
 }
