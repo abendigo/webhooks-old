@@ -3,8 +3,8 @@ import crypto from 'crypto';
 
 import Docker from 'dockerode';
 
-import config from '../../config.json';
-import secrets from '../../secrets.json';
+import config from '../../config/config.json';
+import secrets from '../../config/secrets.json';
 
 export const verify = (request, response, buffer, encoding) => {
   const { 'x-hub-signature': expected } = request.headers;
@@ -27,18 +27,18 @@ export const verify = (request, response, buffer, encoding) => {
 
 export const handler = async (request, response /*, next */) => {
   const {
-    'x-github-event': event,
-    'x-github-delivery': delivery
+    'x-github-event': event
+    // 'x-github-delivery': delivery
   } = request.headers;
   const { repo } = request.params;
 
-  console.log('===============', {
-    event,
-    delivery,
-    repo,
-    secrets: secrets[repo],
-    config: config[repo]
-  });
+  // console.log('===============', {
+  //   event,
+  //   delivery,
+  //   repo,
+  //   secrets: secrets[repo],
+  //   config: config[repo]
+  // });
 
   const octokit = new Octokit({
     auth: secrets[repo].token,
@@ -53,54 +53,65 @@ export const handler = async (request, response /*, next */) => {
     case 'deployment':
       {
         const {
-          deployment: { id, task, payload, environment, description },
+          // deployment: { id, task, payload, environment, description },
+          deployment: { id, payload },
           repository: {
             name,
             owner: { login }
           }
         } = request.body;
-        console.log({
-          id,
-          task,
-          payload,
-          environment,
-          description,
-          name,
-          login
-        });
+        // console.log({
+        //   id,
+        //   task,
+        //   payload,
+        //   environment,
+        //   description,
+        //   name,
+        //   login
+        // });
 
         // const docker = new Docker({ socketPath: '/var/run/docker.sock' });
         const docker = new Docker();
+        const fromImage = `${config[repo].registry}/${config[repo].repository}/${config[repo].image}`;
 
         const images = await docker.listImages({
           all: false,
           filters: {
-            reference: [payload]
+            reference: [`${fromImage}:${payload}`]
           }
         });
-        console.log('images', images.length);
-        for (let image of images) {
-          console.log('image', image.RepoTags);
-        }
+        // console.log('images', images.length);
+        // for (let image of images) {
+        //   console.log('image', image.RepoTags);
+        // }
         if (images.length === 0) {
           const auth = {
             username: 'abendigo',
             password: secrets[repo].token
           };
-          // await docker.pull(payload, { authconfig: auth });
 
-          await docker.createImage();
+          await new Promise((resolve, reject) => {
+            docker.createImage(
+              auth,
+              { fromImage, tag: payload },
+              (error, stream) => {
+                if (error) return reject(error);
 
-          console.log('pulled');
+                // stream.on('data', data => console.log(data.toString('utf8')));
+                stream.on('end', resolve);
+                stream.on('error', reject);
+              }
+            );
+          });
         }
 
         const containers = await docker.listContainers({
           all: true,
           filters: {
-            name: [config[repo].name]
+            name: [config[repo].options.name]
           }
         });
-        console.log('containers', { containers });
+        // console.log('containers', { containers });
 
         if (containers && containers[0]) {
           const container = docker.getContainer(containers[0].Id);
@@ -109,20 +120,20 @@ export const handler = async (request, response /*, next */) => {
         }
 
         const container = await docker.createContainer({
-          ...config[repo],
-          Image: payload
+          ...config[repo].options,
+          Image: `${fromImage}:${payload}`
         });
-        console.log({ container });
+        // console.log({ container });
         await container.start();
 
-        // await octokit.repos
-        //   .createDeploymentStatus({
-        //     owner: login,
-        //     repo: name,
-        //     deployment_id: id,
-        //     state: 'success'
-        //   })
-        //   .catch(error => console.log(error));
+        await octokit.repos
+          .createDeploymentStatus({
+            owner: login,
+            repo: name,
+            deployment_id: id,
+            state: 'success'
+          })
+          .catch(error => console.log(error));
       }
       break;
   }
