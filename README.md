@@ -1,5 +1,8 @@
 ﻿# webhooks
 
+![Server](https://github.com/abendigo/webhooks/workflows/Server/badge.svg?branch=master)
+![Worker](https://github.com/abendigo/webhooks/workflows/Worker/badge.svg?branch=master)
+
 node --experimental-modules .\index.mjs
 
 docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v c:/Users/mark/dev:/data node bash
