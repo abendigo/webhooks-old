@@ -16,7 +16,12 @@ const ensureContentType = expected => (request, response, next) => {
 };
 
 const { handler } = polka()
-  .use(logger())
-  .post('/github/:repo?', ensureContentType('application/json'), bodyParser.json({ verify: verify }), github);
+  //  .use(logger())
+  .post(
+    '/github/:repo?',
+    ensureContentType('application/json'),
+    bodyParser.json({ verify: verify }),
+    github
+  );
 
 export default handler;

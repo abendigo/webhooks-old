@@ -1,12 +1,14 @@
-name: Build, Tag, Publish, and Deploy Docker image
+name: Build, Tag, Publish, and Deploy Webhooks.Handler Docker image
 env:
   REGISTRY: docker.pkg.github.com
-  IMAGE: webhooks
+  IMAGE: webhooks.handler
 
 on:
   push:
     branches:
       - master
+    paths:
+      - 'handler/**'
 
 jobs:
   build:

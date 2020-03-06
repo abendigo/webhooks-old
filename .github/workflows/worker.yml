@@ -1,0 +1,41 @@
+name: Build, Tag, Publish, and Deploy Webhooks.Worker Docker image
+env:
+  REGISTRY: docker.pkg.github.com
+  IMAGE: webhooks.worker
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'handler/**'
+
+jobs:
+  build:
+    name: Build, Tag, Publish, and Deploy Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Generate VERSION
+        run: echo "::set-env name=VERSION::$(git describe --tags --always --dirty)"
+      - name: Build IMAGE
+        run: docker build -t ${IMAGE} .
+      - name: Tag IMAGE:VERSION and IMAGE:latest
+        run: |
+          docker tag ${IMAGE} ${REGISTRY}/${{ github.repository }}/${IMAGE}:${VERSION}
+          docker tag ${IMAGE} ${REGISTRY}/${{ github.repository }}/${IMAGE}:latest
+      - name: Login to Registry
+        run: echo ${{ secrets.GITHUB_DOCKER_PASSWORD }} | docker login ${REGISTRY} -u ${{ secrets.GITHUB_DOCKER_USERNAME }} --password-stdin
+      - name: Publish IMAGE:VERSION and IMAGE:latest
+        run: |
+          docker push ${REGISTRY}/${GITHUB_REPOSITORY}/${IMAGE}:${VERSION}
+          docker push ${REGISTRY}/${GITHUB_REPOSITORY}/${IMAGE}:latest
+      - name: Create Deployment - IMAGE:VERSION to staging
+        id: deploy
+        uses: abendigo/create-deployment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          payload: ${{ env.VERSION }}
+          description: Deploy ${{ env.IMAGE }}:${{ env.VERSION }} to staging
+      - name: Get the deplopyment ID
+        run: echo "The deployment ID was ${{ steps.deploy.outputs.id }}"
