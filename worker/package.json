@@ -1,0 +1,24 @@
+{
+  "name": "webhooks",
+  "version": "0.1.1",
+  "description": "",
+  "homepage": "https://github.com/abendigo/webhooks#readme",
+  "bugs": "https://github.com/abendigo/webhooks/issues",
+  "license": "MIT",
+  "main": "worker.mjs",
+  "repository": "github:abendigo/webhooks",
+  "scripts": {
+    "start": "node --experimental-modules worker.mjs",
+    "dev": "nodemon --experimental-modules worker.mjs"
+  },
+  "config": {},
+  "dependencies": {
+    "@octokit/rest": "^17.0.0",
+    "chokidar": "^3.3.1",
+    "dockerode": "^3.0.2",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.0"
+  }
+}

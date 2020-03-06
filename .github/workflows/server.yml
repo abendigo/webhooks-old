@@ -1,14 +1,14 @@
-name: Build, Tag, Publish, and Deploy Webhooks.Handler Docker image
+name: Server
 env:
   REGISTRY: docker.pkg.github.com
-  IMAGE: webhooks.handler
+  IMAGE: server
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'handler/**'
+      - 'server/**'
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
       - name: Generate VERSION
         run: echo "::set-env name=VERSION::$(git describe --tags --always --dirty)"
       - name: Build IMAGE
-        run: docker build -t ${IMAGE} .
+        run: docker build -t ${IMAGE} server
       - name: Tag IMAGE:VERSION and IMAGE:latest
         run: |
           docker tag ${IMAGE} ${REGISTRY}/${{ github.repository }}/${IMAGE}:${VERSION}
