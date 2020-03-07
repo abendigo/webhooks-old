@@ -45,4 +45,4 @@ EXPOSE $PORT
 
 # (cant do this, Need ROOT to access /var/run/docker.sock)
 # USER node
-CMD ["npm" "start"]
+CMD ["npm", "start"]

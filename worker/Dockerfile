@@ -44,4 +44,4 @@ ENV PORT=8080
 EXPOSE $PORT
 
 # USER node - Need ROOT to access /var/run/docker.sock
-CMD ["npm" "start"]
+CMD ["npm", "start"]
