@@ -17,3 +17,6 @@ docker run --name webhooks -it --rm -v /var/run/docker.sock:/var/run/docker.sock
 docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -d mysql
 
 docker exec knex_db_1 mysqldump -d -uwebhooks -ppassword webhooks
+
+CREATE USER 'webhooks'@'%' IDENTIFIED BY 'password';
+GRANT ALL ON webhooks.\* TO 'webhooks'@'%';

@@ -1,13 +1,13 @@
 import Octokit from '@octokit/rest';
 import crypto from 'crypto';
 import * as fs from 'fs';
-
 import mysql from 'mysql';
+
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'webhooks',
-  password: 'password',
-  database: 'webhooks'
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE
 });
 connection.connect(err => {
   if (err) throw err;

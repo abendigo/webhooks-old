@@ -16,7 +16,7 @@ const ensureContentType = expected => (request, response, next) => {
 };
 
 const { handler } = polka()
-  //  .use(logger())
+  .use(logger())
   .post(
     '/github/:repo?',
     ensureContentType('application/json'),

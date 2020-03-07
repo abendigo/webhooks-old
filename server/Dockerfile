@@ -43,5 +43,6 @@ ENV NODE_ENV=production
 ENV PORT=8080
 EXPOSE $PORT
 
-# USER node - Need ROOT to access /var/run/docker.sock
-CMD ["node", "--experimental-modules", "server.mjs"]
+# (cant do this, Need ROOT to access /var/run/docker.sock)
+# USER node
+CMD ["npm" "start"]

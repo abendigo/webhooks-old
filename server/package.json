@@ -1,21 +1,20 @@
 {
   "name": "webhooks.server",
-  "version": "0.1.1",
-  "description": "",
   "homepage": "https://github.com/abendigo/webhooks#readme",
   "bugs": "https://github.com/abendigo/webhooks/issues",
   "license": "MIT",
   "main": "server.mjs",
   "repository": "github:abendigo/webhooks",
   "scripts": {
-    "start": "node --experimental-modules server.mjs",
-    "dev": "nodemon --experimental-modules server.mjs | pino-pretty -c -t",
-    "worker": "nodemon --experimental-modules worker.mjs"
+    "start": "node --experimental-modules -r dotenv/config server.mjs",
+    "dev": "nodemon --experimental-modules -r dotenv/config server.mjs | pino-pretty -c -t"
   },
   "config": {},
   "dependencies": {
     "@octokit/rest": "^17.0.0",
     "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "mysql": "^2.18.1",
     "pino-http": "^4.3.0",
     "polka": "^0.5.2"
   },

@@ -23,15 +23,11 @@ async function onBeacon() {
   console.log('onBeacon');
 
   const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'webhooks',
-    password: 'password',
-    database: 'webhooks'
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
   });
-  // connection.connect(err => {
-  //   if (err) throw err;
-  //   console.log('Connected!');
-  // });
 
   let processed;
   do {
