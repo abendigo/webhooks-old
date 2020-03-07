@@ -18,5 +18,9 @@ docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -d mysql
 
 docker exec knex_db_1 mysqldump -d -uwebhooks -ppassword webhooks
 
+CREATE USER 'nativeuser'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+
 CREATE USER 'webhooks'@'%' IDENTIFIED BY 'password';
 GRANT ALL ON webhooks.\* TO 'webhooks'@'%';
+
+mysql -uroot -pMyNewPass

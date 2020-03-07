@@ -16,7 +16,8 @@
     "dotenv": "^8.2.0",
     "mysql": "^2.18.1",
     "pino-http": "^4.3.0",
-    "polka": "^0.5.2"
+    "polka": "^0.5.2",
+    "sirv": "^0.4.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.0",
