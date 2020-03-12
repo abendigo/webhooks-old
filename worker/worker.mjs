@@ -20,7 +20,12 @@ async function query(connection, query, data = {}) {
 // import secrets from '../../config/secrets.json';
 
 async function onBeacon() {
-  console.log('onBeacon');
+  console.log('onBeacon', {
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
+  });
 
   const connection = mysql.createConnection({
     host: process.env.MYSQL_HOST,

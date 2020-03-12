@@ -5,11 +5,6 @@
   "bugs": "https://github.com/abendigo/webhooks/issues",
   "license": "MIT",
   "repository": "github:abendigo/webhooks",
-  "scripts": {
-    "start": "node --experimental-modules -r dotenv/config worker.mjs",
-    "dev": "nodemon --experimental-modules -r dotenv/config worker.mjs"
-  },
-  "config": {},
   "devDependencies": {
     "eslint": "^6.7.0",
     "eslint-config-prettier": "^6.7.0",

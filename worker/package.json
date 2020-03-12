@@ -1,17 +1,14 @@
 {
-  "name": "webhooks",
-  "version": "0.1.1",
-  "description": "",
+  "name": "webhooks.worker",
   "homepage": "https://github.com/abendigo/webhooks#readme",
   "bugs": "https://github.com/abendigo/webhooks/issues",
   "license": "MIT",
   "main": "worker.mjs",
   "repository": "github:abendigo/webhooks",
   "scripts": {
-    "start": "node --experimental-modules worker.mjs",
-    "dev": "nodemon --experimental-modules worker.mjs"
+    "start": "node --experimental-modules -r dotenv/config worker.mjs",
+    "dev": "nodemon --experimental-modules -r dotenv/config worker.mjs"
   },
-  "config": {},
   "dependencies": {
     "@octokit/rest": "^17.0.0",
     "chokidar": "^3.3.1",
