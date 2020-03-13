@@ -36,9 +36,7 @@ jobs:
         uses: abendigo/create-deployment@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          payload:
-            tag: ${{ env.VERSION }}
-            image: ${IMAGE}
+          payload: {tag: ${{ env.VERSION }}, image: ${IMAGE} }
           description: Deploy ${{ env.IMAGE }}:${{ env.VERSION }} to staging
       - name: Get the deplopyment ID
         run: echo "The deployment ID was ${{ steps.deploy.outputs.id }}"
