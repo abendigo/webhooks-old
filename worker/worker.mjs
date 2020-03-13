@@ -1,11 +1,14 @@
 import Octokit from '@octokit/rest';
 import chokidar from 'chokidar';
 import crypto from 'crypto';
-
 import Docker from 'dockerode';
 import * as fs from 'fs';
-
 import mysql from 'mysql';
+import { createContainer, fetchImage, listImages } from './lib/docker.mjs';
+import config from './config/config.json';
+import secrets from './config/secrets.json';
+
+console.log({ config, secrets });
 
 async function query(connection, query, data = {}) {
   return new Promise((resolve, reject) => {
@@ -16,9 +19,6 @@ async function query(connection, query, data = {}) {
     });
   });
 }
-// import config from '../../config/config.json';
-// import secrets from '../../config/secrets.json';
-
 async function onBeacon() {
   console.log('onBeacon', {
     host: process.env.MYSQL_HOST,
@@ -45,15 +45,71 @@ async function onBeacon() {
         `SELECT * FROM tasks WHERE status = 'queued' LIMIT 1 FOR UPDATE SKIP LOCKED`
       );
 
-      processed = response.length;
+      // processed = response.length;
       if (response.length) {
         console.log(response[0].id, response[0].status);
 
-        await query(
-          connection,
-          `UPDATE tasks SET status = 'deployed' where id = ?`,
-          response[0].id
+        const params = JSON.parse(response[0].params);
+        const headers = JSON.parse(response[0].headers);
+        const body = JSON.parse(response[0].body);
+
+        const { repo } = params;
+        const {
+          deployment: { id, payload },
+          repository: {
+            name,
+            owner: { login }
+          }
+        } = body;
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
+        const fromImage = `${config[repo].registry}/${config[repo].repository}/${config[repo].image}`;
+        console.log({ fromImage, payload });
+        // await query(
+        //   connection,
+        //   `UPDATE tasks SET status = 'deployed' where id = ?`,
+        //   response[0].id
+        // );
+        let images = await listImages({ reference: `${fromImage}` });
+        console.log({ images });
+
+        if (images.length === 0) {
+          await fetchImage({
+            auth: {
+              username: 'abendigo',
+              password: secrets[repo].token
+            },
+            fromImage,
+            tag: payload
+          });
+
+          images = await listImages({ fromImage, tag: payload });
+          console.log({ images });
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
+        const docker = new Docker();
+        const containers = await docker.listContainers({
+          all: true
+
+          // filters: { name: [name] }
+        });
+        console.log('containers', { containers });
+        const filtered = containers.filter(({ Image: image }) =>
+          image.startsWith(fromImage)
         );
+        console.log({ filtered });
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
+        // const container = await createContainer({
+        //   image: `${fromImage}:${payload}`,
+        //   options: config[repo].options
+        // });
+
+        // console.log({ container });
       }
 
       await query(connection, 'COMMIT');

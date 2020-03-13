@@ -9,7 +9,6 @@
     "start": "node --experimental-modules -r dotenv/config server.mjs",
     "dev": "nodemon --experimental-modules -r dotenv/config server.mjs | pino-pretty -c -t"
   },
-  "config": {},
   "dependencies": {
     "@octokit/rest": "^17.0.0",
     "body-parser": "^1.19.0",
