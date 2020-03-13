@@ -37,7 +37,7 @@ WORKDIR /usr/src/service
 
 COPY --from=build /src/node_modules node_modules
 COPY --from=build /src/package.json ./
-# COPY --from=build /src/app app
+COPY --from=build /src/lib lib
 COPY --from=build /src/*.mjs ./
 
 ENV NODE_ENV=production

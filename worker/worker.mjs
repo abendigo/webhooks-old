@@ -40,18 +40,18 @@ async function onBeacon() {
     console.log('xx', xx);
 
     try {
-      const response = await query(
+      const [response] = await query(
         connection,
         `SELECT * FROM tasks WHERE status = 'queued' LIMIT 1 FOR UPDATE SKIP LOCKED`
       );
 
       // processed = response.length;
-      if (response.length) {
-        console.log(response[0].id, response[0].status);
+      if (response) {
+        console.log(response.id, response.status);
 
-        const params = JSON.parse(response[0].params);
-        const headers = JSON.parse(response[0].headers);
-        const body = JSON.parse(response[0].body);
+        const params = JSON.parse(response.params);
+        const headers = JSON.parse(response.headers);
+        const body = JSON.parse(response.body);
 
         const { repo } = params;
         const {
@@ -64,13 +64,13 @@ async function onBeacon() {
 
         ///////////////////////////////////////////////////////////////////////////////////////////
 
-        const fromImage = `${config[repo].registry}/${config[repo].repository}/${config[repo].image}`;
-        console.log({ fromImage, payload });
-        // await query(
-        //   connection,
-        //   `UPDATE tasks SET status = 'deployed' where id = ?`,
-        //   response[0].id
-        // );
+        console.log({ payload });
+        const { tag, image } = JSON.parse(payload);
+        console.log({ tag, image });
+
+        const fromImage = `${config[repo].registry}/${config[repo].repository}/${image}`;
+        console.log({ fromImage });
+
         let images = await listImages({ reference: `${fromImage}` });
         console.log({ images });
 
@@ -81,10 +81,10 @@ async function onBeacon() {
               password: secrets[repo].token
             },
             fromImage,
-            tag: payload
+            tag
           });
 
-          images = await listImages({ fromImage, tag: payload });
+          images = await listImages({ reference: `${fromImage}` });
           console.log({ images });
         }
 
@@ -104,12 +104,23 @@ async function onBeacon() {
 
         ///////////////////////////////////////////////////////////////////////////////////////////
 
-        // const container = await createContainer({
-        //   image: `${fromImage}:${payload}`,
-        //   options: config[repo].options
-        // });
+        const container = await createContainer({
+          image: `${fromImage}:${tag}`,
+          options: config[repo].images[image].options
+        });
 
         // console.log({ container });
+        container.start();
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
+        // await query(
+        //   connection,
+        //   `UPDATE tasks SET status = 'deployed' where id = ?`,
+        //   response.id
+        // );
       }
 
       await query(connection, 'COMMIT');
